@@ -1,1 +1,1 @@
-import { tag, style } from 'dist/index'
+import { tag, style } from './dist/index'

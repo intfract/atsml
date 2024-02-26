@@ -2,6 +2,7 @@
   "name": "atsml",
   "description": "Advanced TypeScript Markup Language",
   "version": "1.0.0",
+  "type": "module",
   "main": "dist/index.js",
   "devDependencies": {
     "prettier": "^3.2.5"

@@ -1,3 +1,7 @@
+export function build(html: string) {
+  //
+}
+
 export function tag(name: string, innerHTML: string, attributes?: Record<string, string>): string {
   return `<${name}${attributes ? Object.keys(attributes).map(k => ` ${k}="${attributes[k]}"`) : ''}>${innerHTML}</${name}>`
 }
