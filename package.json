@@ -1,0 +1,15 @@
+{
+  "name": "atsml",
+  "description": "Advanced TypeScript Markup Language",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  },
+  "scripts": {
+    "prettier": "prettier 'src/**/*.ts' --write"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
