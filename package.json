@@ -5,12 +5,17 @@
   "type": "module",
   "main": "dist/index.js",
   "devDependencies": {
+    "@types/node": "^20.11.20",
     "prettier": "^3.2.5"
   },
   "scripts": {
-    "prettier": "prettier 'src/**/*.ts' --write"
+    "prettier": "prettier 'src/**/*.ts' --write",
+    "test": "node index.test.js"
   },
   "keywords": [],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "dist/**/*"
+  ]
 }
