@@ -1,16 +1,16 @@
-import { Reactive, addChild, button, tag } from './dist/index'
+import { Reactive, addChild, input, tag } from './dist/index'
 
-let counter = new Reactive(0)
-const btn = button(['count: ', counter], {}, e => counter.value++)
+let textBind = new Reactive("Hello, world!")
+
 addChild(
   document.body,
   [
     tag(
       'p',
       [
-        'Click the button to increment its value!'
+        textBind,
       ],
     ),
-    btn,
+    input('text', {}, textBind),
   ],
 )

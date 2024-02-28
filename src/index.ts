@@ -54,7 +54,7 @@ export function addChild(parent: HTMLElement, slot: Slot | SlotArray | string | 
     return slot
   } else if (slot instanceof Reactive) {
     let child = addChild(parent, slot.value)
-    slot.subscribe((newValue) => {
+    slot.subscribe(newValue => {
       if (!(child === null || child instanceof Reactive)) removeElement(child)
       child = addChild(parent, newValue)
     })
@@ -87,17 +87,33 @@ export function button(slot: SlotArray, attributes?: Record<string, string>, onC
 }
 
 export function img(attributes?: Record<string, string>): HTMLImageElement {
-  const element = new HTMLImageElement()
+  const element = document.createElement('img')
   if (attributes) {
     Object.keys(attributes).forEach(key => element.setAttribute(key, attributes[key]))
   }
   return element
 }
 
-export function input(attributes?: Record<string, string>): HTMLInputElement {
-  const element = new HTMLInputElement()
+export function input(type: string, attributes?: Record<string, string>, bind?: Reactive<string | number | boolean>): HTMLInputElement {
+  const element = document.createElement('input')
+  element.setAttribute('type', type)
   if (attributes) {
     Object.keys(attributes).forEach(key => element.setAttribute(key, attributes[key]))
+  }
+  if (bind) {
+    if (!(bind instanceof Reactive)) {
+      console.error(`[ATSML] input bind must be of type Reactive<string | number>`)
+    } else {
+      if ((type === 'checkbox' || type === 'radio') && typeof bind.value === 'boolean') {
+        element.checked = bind.value
+        element.addEventListener('change', e => bind.value = element.checked)
+        bind.subscribe(newValue => element.checked = typeof newValue === 'boolean' ? newValue : false)
+      } else {
+        element.value = bind.value.toString()
+        element.addEventListener('input', e => bind.value = element.value)
+        bind.subscribe(newValue => element.value = newValue.toString())
+      }
+    }
   }
   return element
 }
