@@ -26,20 +26,80 @@ export class Reactive<T> {
   }
 }
 
-export function tag(name: string, innerHTML: string, attributes?: Record<string, string>): string {
-  return `<${name}${attributes ? Object.keys(attributes).map(k => ` ${k}="${attributes[k]}"`) : ''}>${innerHTML}</${name}>`
+type Slot = Reactive<any> | HTMLElement | Text
+
+interface SlotArray extends Array<Slot | SlotArray> {}
+
+export function removeElement(slot: any) {
+  if (slot instanceof Array) {
+    for (const c of slot) {
+      removeElement(c)
+    }
+  } else {
+    slot.remove()
+  }
 }
 
-export function h(level: 1 | 2 | 3 | 4 | 5 | 6, innerHTML: string, attributes?: Record<string, string>) {
-  return tag(`h${level}`, innerHTML, attributes)
+export function addChild(parent: HTMLElement, slot: Slot | SlotArray | string | number): Slot | SlotArray | null {
+  if (slot === null) return null
+  if (slot instanceof Array) {
+    const children: SlotArray = []
+    slot.forEach(child => {
+      const c = addChild(parent, child)
+      if (c) children.push(c)
+    })
+    return children
+  } else if (slot instanceof HTMLElement) {
+    parent.appendChild(slot)
+    return slot
+  } else if (slot instanceof Reactive) {
+    let child = addChild(parent, slot.value)
+    slot.subscribe((newValue) => {
+      if (!(child === null || child instanceof Reactive)) removeElement(child)
+      child = addChild(parent, newValue)
+    })
+    return child
+  } else if (typeof slot === 'string' || typeof slot === 'number') {
+    const text = document.createTextNode(`${slot}`)
+    parent.appendChild(text)
+    return text
+  }
+  return null
 }
 
-export function img(attributes?: Record<string, string>) {
-  return `<img${attributes ? Object.keys(attributes).map(k => ` ${k}="${attributes[k]}"`) : ''}/>`
+export function tag(tagName: string, slot: SlotArray, attributes?: Record<string, string>): HTMLElement {
+  const element = document.createElement(tagName)
+  addChild(element, slot)
+  if (attributes) {
+    Object.keys(attributes).forEach(key => element.setAttribute(key, attributes[key]))
+  }
+  return element
 }
 
-export function input(attributes?: Record<string, string>) {
-  return `<input${attributes ? Object.keys(attributes).map(k => ` ${k}="${attributes[k]}"`) : ''}/>`
+export function h(level: 1 | 2 | 3 | 4 | 5 | 6, slot: SlotArray, attributes?: Record<string, string>) {
+  return tag(`h${level}`, slot, attributes)
+}
+
+export function button(slot: SlotArray, attributes?: Record<string, string>, onClick?: EventListenerOrEventListenerObject) {
+  const btn = tag('button', slot, attributes)
+  if (onClick) btn.addEventListener('click', onClick)
+  return btn
+}
+
+export function img(attributes?: Record<string, string>): HTMLImageElement {
+  const element = new HTMLImageElement()
+  if (attributes) {
+    Object.keys(attributes).forEach(key => element.setAttribute(key, attributes[key]))
+  }
+  return element
+}
+
+export function input(attributes?: Record<string, string>): HTMLInputElement {
+  const element = new HTMLInputElement()
+  if (attributes) {
+    Object.keys(attributes).forEach(key => element.setAttribute(key, attributes[key]))
+  }
+  return element
 }
 
 export function style(declarations: Record<string, string>): string {
