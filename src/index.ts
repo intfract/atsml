@@ -26,7 +26,7 @@ export class Reactive<T> {
   }
 }
 
-type Slot = Reactive<any> | HTMLElement | Text
+type Slot = Reactive<any> | HTMLElement | Text | string
 
 interface SlotArray extends Array<Slot | SlotArray> {}
 

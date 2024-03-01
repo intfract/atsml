@@ -15,7 +15,7 @@ ATSML is a lightweight ESM library for creating reactive web applications.
 This code creates a **reactive** button that counts the number of times it has been clicked.
 
 ```js
-import { Reactive, addChild, button, tag } from './dist/index'
+import { Reactive, addChild, button, tag } from 'atsml'
 
 let counter = new Reactive(0) // create a reactive object with value 0
 const btn = button(
@@ -34,6 +34,31 @@ addChild(
       ],
     ),
     btn,
+  ],
+)
+```
+
+## Input Binding
+
+```js
+import { Reactive, addChild, input, tag } from 'atsml'
+
+let textBind = new Reactive('Hello, world!') // create a reactive object with value 'Hello, world!'
+
+addChild(
+  document.body,
+  [
+    tag(
+      'p',
+      [
+        textBind,
+      ],
+    ),
+    input(
+      'text', // input type
+      {}, // attributes
+      textBind, // value binding
+    ),
   ],
 )
 ```
